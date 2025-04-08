@@ -1,17 +1,14 @@
-import type { Route } from "./+types/home";
-import { Welcome } from "../welcome/welcome";
+import postgres from 'postgres';
+import type { Route } from './+types/home';
 
-export function meta({}: Route.MetaArgs) {
-  return [
-    { title: "New React Router App" },
-    { name: "description", content: "Welcome to React Router!" },
-  ];
-}
-
-export function loader({ context }: Route.LoaderArgs) {
-  return { message: context.cloudflare.env.VALUE_FROM_CLOUDFLARE };
+export async function loader() {
+  const sql = postgres(
+    'postgresql://react.wjtabypwdxtwbzexsdne:router@aws-0-us-east-2.pooler.supabase.com:5432/postgres'
+  );
+  const res = await sql`select 123;`;
+  return JSON.stringify(res);
 }
 
 export default function Home({ loaderData }: Route.ComponentProps) {
-  return <Welcome message={loaderData.message} />;
+  return <div>{loaderData}</div>;
 }
